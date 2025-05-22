@@ -1,0 +1,37 @@
+on:
+  # Se ejecuta cuando hay un push a la rama develop
+  push:
+    branches: [ "develop" ]
+  
+  # Permite ejecutarlo manualmente
+  workflow_dispatch:
+
+jobs:
+  merge-develop-to-main:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      # Checkout del repositorio completo con histórico
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Configuración del usuario de Git
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_DEPLOY_KEY }}@github.com/JAGL99/CritiQ.git
+
+      # Fusionar develop en main
+      - name: Fusionar develop en main
+        run: |
+          git checkout main
+          git pull origin main
+          git merge --no-ff origin/develop -m "Merge develop into main via GitHub Actions"
+          git push origin main
