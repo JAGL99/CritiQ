@@ -1,7 +1,7 @@
 package com.jagl.critiq.domain.data
 
 data class MediaDomain(
-    val id: Int,
+    val id: Long,
     val title: String,
     val posterPath: String,
     val backdropPath: String,

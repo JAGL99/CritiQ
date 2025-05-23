@@ -8,7 +8,7 @@ import com.jagl.critiq.domain.data.MediaDomain
 @Entity(tableName = "media")
 data class MediaEntity(
     @PrimaryKey(autoGenerate = false)
-    val id: Int,
+    val id: Long,
     val title: String,
     val posterPath: String,
     val backdropPath: String,

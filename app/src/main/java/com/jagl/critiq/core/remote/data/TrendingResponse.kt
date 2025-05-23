@@ -20,7 +20,7 @@ data class TrendingResponse(
         val firstAirDate: String,
         @SerializedName("genre_ids")
         val genreIds: List<Int>,
-        val id: Int,
+        val id: Long,
         @SerializedName("media_type")
         val mediaType: String,
         val name: String,
