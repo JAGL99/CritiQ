@@ -3,8 +3,8 @@ package com.jagl.critiq.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jagl.critiq.R
-import com.jagl.critiq.core.database.source.MediaDataSourceImpl
-import com.jagl.critiq.core.remote.source.AllMediaSourceImpl
+import com.jagl.critiq.core.database.source.MediaDataSource
+import com.jagl.critiq.core.remote.source.AllMediaSource
 import com.jagl.critiq.core.utils.UiMessage
 import com.jagl.critiq.domain.data.MediaDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val allMediaSource: AllMediaSourceImpl,
-    private val mediaDataSource: MediaDataSourceImpl,
+    private val allMediaSource: AllMediaSource,
+    private val mediaDataSource: MediaDataSource,
 ) : ViewModel() {
 
 
