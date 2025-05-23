@@ -81,7 +81,8 @@ class HomeViewModel @Inject constructor(
         return Item(
             id = media.id,
             title = media.title,
-            imageUrl = media.backdropPath
+            imageUrl = media.backdropPath,
+            rating = media.rating
         )
     }
 

@@ -3,14 +3,20 @@ package com.jagl.critiq.feature.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -70,23 +76,54 @@ fun HomeContent(
                     columns = GridCells.Fixed(2),
                 ) {
                     items(uiState.data) { item ->
-                        Card(
-                            modifier = Modifier.padding(8.dp)
-                        ) {
+                        Card(modifier = Modifier.padding(8.dp)) {
                             Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(4.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 AsyncImage(
+                                    modifier = Modifier.fillMaxWidth(),
                                     model = item.imageUrl,
                                     contentDescription = item.title,
                                 )
                                 Spacer(modifier = Modifier.padding(4.dp))
                                 Text(text = item.title)
+                                Spacer(modifier = Modifier.padding(4.dp))
+                                RatingBar(
+                                    modifier = Modifier.padding(4.dp),
+                                    rating = item.rating
+                                )
+
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun RatingBar(
+    modifier: Modifier = Modifier,
+    rating: Double
+) {
+    Row {
+        (1..5).forEach { index ->
+            val star = if (index <= rating / 2) {
+                Icons.Filled.Favorite
+            } else {
+                Icons.Outlined.FavoriteBorder
+            }
+            Icon(
+                imageVector = star,
+                contentDescription = null,
+                tint = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                modifier = modifier.padding(2.dp)
+            )
+
         }
     }
 }
