@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.safeargs)
+    alias(libs.plugins.dagger.hilt.android)
 }
 
 android {
@@ -52,7 +53,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    ksp(libs.dagger.hilt.android.compiler)
+    ksp(libs.dagger.hilt.compiler)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.coil.compose)
