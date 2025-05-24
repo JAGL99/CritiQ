@@ -1,7 +1,7 @@
-package com.jagl.critiq.core.utils.di
+package com.jagl.critiq.domain.di
 
-import com.jagl.critiq.core.utils.dispatcherProvider.DispatcherProvider
-import com.jagl.critiq.core.utils.dispatcherProvider.DispatcherProviderImpl
+import com.jagl.critiq.domain.dispatcherProvider.DispatcherProvider
+import com.jagl.critiq.domain.dispatcherProvider.DispatcherProviderImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UtilsDi {
+object DomainDi {
 
     @Provides
     @Singleton
