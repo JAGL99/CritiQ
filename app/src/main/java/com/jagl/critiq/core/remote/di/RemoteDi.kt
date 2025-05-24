@@ -3,7 +3,7 @@ package com.jagl.critiq.core.remote.di
 import com.jagl.critiq.core.remote.api.MovieApi
 import com.jagl.critiq.core.remote.source.AllMediaSource
 import com.jagl.critiq.core.remote.source.AllMediaSourceImpl
-import com.jagl.critiq.core.utils.dispatcherProvider.DispatcherProvider
+import com.jagl.critiq.domain.dispatcherProvider.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

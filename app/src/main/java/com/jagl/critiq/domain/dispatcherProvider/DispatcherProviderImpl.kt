@@ -1,5 +1,6 @@
-package com.jagl.critiq.core.utils.dispatcherProvider
+package com.jagl.critiq.domain.dispatcherProvider
 
+import com.jagl.critiq.domain.dispatcherProvider.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 

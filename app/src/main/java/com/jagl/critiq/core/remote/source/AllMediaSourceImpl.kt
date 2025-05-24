@@ -2,7 +2,7 @@ package com.jagl.critiq.core.remote.source
 
 import com.jagl.critiq.core.remote.api.MovieApi
 import com.jagl.critiq.core.remote.data.TrendingResponse
-import com.jagl.critiq.core.utils.dispatcherProvider.DispatcherProvider
+import com.jagl.critiq.domain.dispatcherProvider.DispatcherProvider
 import com.jagl.critiq.domain.data.MediaDomain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
