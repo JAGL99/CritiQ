@@ -9,9 +9,11 @@ import com.jagl.critiq.core.utils.UiMessage
 import com.jagl.critiq.domain.data.MediaDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,8 +26,13 @@ class HomeViewModel @Inject constructor(
 
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-
+    val uiState: StateFlow<UiState> = _uiState
+        .onStart { init() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000L),
+            initialValue = UiState.Loading
+        )
 
     sealed class UiState {
         data object Loading : UiState()
@@ -33,10 +40,6 @@ class HomeViewModel @Inject constructor(
         data class Error(val message: UiMessage) : UiState()
     }
 
-
-    init {
-        init()
-    }
 
     private fun init() {
         viewModelScope.launch {
