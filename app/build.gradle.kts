@@ -44,8 +44,6 @@ android {
     }
 
     junitPlatform {
-        // Don't raise errors about incorrect configuration
-        // of JUnit 5 instrumentation tests
         instrumentationTests {
             integrityCheckEnabled = false
         }
@@ -75,27 +73,21 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
-
-    androidTestImplementation("androidx.test:runner:1.4.0")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-
+    testImplementation(libs.turbine)
+    testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.junit.jupiter.params)
-    androidTestImplementation(libs.junit5.test.core)
-
     testImplementation(libs.assertk)
     testImplementation(libs.mockk)
-
     testRuntimeOnly(libs.junit.jupiter.engine)
-
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.junit5.test.core)
     androidTestImplementation(libs.assertk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
