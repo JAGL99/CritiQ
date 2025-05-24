@@ -1,4 +1,4 @@
-package com.jagl.critiq.testing
+package com.jagl.critiq.common
 
 import com.jagl.critiq.domain.data.MediaDomain
 

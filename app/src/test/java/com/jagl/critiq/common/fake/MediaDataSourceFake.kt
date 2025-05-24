@@ -1,4 +1,4 @@
-package com.jagl.critiq.testing.fake
+package com.jagl.critiq.common.fake
 
 import com.jagl.critiq.core.database.entities.MediaEntity
 import com.jagl.critiq.core.database.source.MediaDataSource
