@@ -1,8 +1,8 @@
-package com.jagl.critiq.core.remote.data
+package com.jagl.critiq.core.remote.model
 
 import com.google.gson.annotations.SerializedName
-import com.jagl.critiq.core.utils.mappers.MapperData
-import com.jagl.critiq.domain.data.MediaDomain
+import com.jagl.critiq.core.remote.mappers.MapperData
+import com.jagl.critiq.core.model.Media
 
 data class TrendingResponse(
     val page: Int,
@@ -46,14 +46,6 @@ data class TrendingResponse(
         val voteCount: Int
     ) {
 
-        fun getCorrectName(): String {
-            return if (mediaType == "movie") {
-                title
-            } else {
-                name
-            }
-        }
-
         fun getFullPosterPath(): String {
             return "https://image.tmdb.org/t/p/w500$posterPath"
         }
@@ -62,25 +54,31 @@ data class TrendingResponse(
             return "https://image.tmdb.org/t/p/w500$backdropPath"
         }
 
-        companion object : MapperData<Result, MediaDomain> {
+        companion object : MapperData<Result, Media> {
 
-            override fun toDomain(data: Result): MediaDomain {
-                val name = data.getCorrectName()
-                return MediaDomain(
-                    id = data.id,
-                    title = name,
-                    posterPath = data.getFullPosterPath(),
-                    backdropPath = data.getFullBackdropPath(),
-                    type = data.mediaType,
-                    rating = data.voteAverage,
-                    releaseDate = if (data.mediaType == "movie") {
-                        data.releaseDate
+            override fun toDomain(data: Result): Media {
+                with(data){
+                    val name = if (data.mediaType == "movie") {
+                        title
                     } else {
-                        data.firstAirDate
-                    },
-                    description = data.overview,
-                    page = -1
-                )
+                        name
+                    }
+                    return Media(
+                        id = data.id,
+                        title = name,
+                        posterPath = data.getFullPosterPath(),
+                        backdropPath = data.getFullBackdropPath(),
+                        type = data.mediaType,
+                        rating = data.voteAverage,
+                        releaseDate = if (data.mediaType == "movie") {
+                            data.releaseDate
+                        } else {
+                            data.firstAirDate
+                        },
+                        description = data.overview
+                    )
+                }
+
             }
         }
     }

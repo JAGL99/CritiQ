@@ -1,9 +1,8 @@
 package com.jagl.critiq.core.remote.di
 
 import com.jagl.critiq.core.remote.api.MovieApi
-import com.jagl.critiq.core.remote.source.AllMediaSource
-import com.jagl.critiq.core.remote.source.AllMediaSourceImpl
-import com.jagl.critiq.domain.dispatcherProvider.DispatcherProvider
+import com.jagl.critiq.core.remote.source.RemoteMediaDataSource
+import com.jagl.critiq.core.remote.source.RemoteMediaDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,11 +20,9 @@ object RemoteDi {
     @Singleton
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
-
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor { chain ->
@@ -61,12 +58,10 @@ object RemoteDi {
     @Singleton
     @Provides
     fun provideMovieSource(
-        movieApi: MovieApi,
-        dispatcherProvider: DispatcherProvider
-    ): AllMediaSource {
-        return AllMediaSourceImpl(
-            movieApi,
-            dispatcherProvider
+        movieApi: MovieApi
+    ): RemoteMediaDataSource {
+        return RemoteMediaDataSourceImpl(
+            movieApi
         )
     }
 
