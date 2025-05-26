@@ -1,8 +1,8 @@
-package com.jagl.critiq.common.fake
+package com.jagl.critiq.core.test.fake
 
-import com.jagl.critiq.core.database.entities.MediaEntity
-import com.jagl.critiq.core.database.source.MediaDataSource
-import com.jagl.critiq.domain.data.MediaDomain
+import com.jagl.critiq.core.local.entities.MediaEntity
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
+import com.jagl.critiq.core.model.Media
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
@@ -10,16 +10,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 
-class MediaDataSourceFake : MediaDataSource {
+class LocalMediaDataSourceFake : LocalMediaDataSource {
 
     private val mediaList = MutableStateFlow<List<MediaEntity>>(emptyList())
 
 
-    override fun getAll(): Flow<List<MediaDomain>> {
+    override fun getAll(): Flow<List<Media>> {
         return flow { mediaList.value }
     }
 
-    override fun getById(id: Long): Flow<MediaDomain?> {
+    override fun getById(id: Long): Flow<Media?> {
         return flow {
             val media = mediaList.value.find { it.id == id }
             if (media != null) {
@@ -30,11 +30,11 @@ class MediaDataSourceFake : MediaDataSource {
         }
     }
 
-    override suspend fun insertAll(domain: List<MediaDomain>) {
+    override suspend fun insertAll(domain: List<Media>) {
         mediaList.update { it + domain.map { media -> MediaEntity.toEntity(media) } }
     }
 
-    override suspend fun insert(domain: MediaDomain) {
+    override suspend fun insert(domain: Media) {
         mediaList.update { it + listOf(domain).map { media -> MediaEntity.toEntity(media) } }
     }
 
@@ -42,7 +42,7 @@ class MediaDataSourceFake : MediaDataSource {
         mediaList.update { emptyList() }
     }
 
-    override suspend fun delete(domain: MediaDomain) {
+    override suspend fun delete(domain: Media) {
         mediaList.filter { it.any { media -> media.id == domain.id } }
             .first()
             .let { media -> mediaList.update { it - media } }

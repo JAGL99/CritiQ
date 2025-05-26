@@ -1,4 +1,4 @@
-package com.jagl.critiq.common.rules.junit5
+package com.jagl.critiq.core.test.rule
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -10,14 +10,12 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 
 class MainCoroutineExtension(
-    val testDispatcher: TestDispatcher = StandardTestDispatcher()
+    private val testDispatcher: TestDispatcher = StandardTestDispatcher()
 ) : BeforeEachCallback, AfterEachCallback {
 
-    override fun beforeEach(context: ExtensionContext?) {
-        Dispatchers.setMain(testDispatcher)
-    }
+    override fun beforeEach(context: ExtensionContext?) = Dispatchers.setMain(testDispatcher)
 
-    override fun afterEach(context: ExtensionContext?) {
-        Dispatchers.resetMain()
-    }
+
+    override fun afterEach(context: ExtensionContext?) = Dispatchers.resetMain()
+
 }

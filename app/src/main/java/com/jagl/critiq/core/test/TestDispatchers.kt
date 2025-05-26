@@ -1,6 +1,6 @@
-package com.jagl.critiq.common
+package com.jagl.critiq.core.test
 
-import com.jagl.critiq.domain.dispatcherProvider.DispatcherProvider
+import com.jagl.critiq.core.common.dispatcherProvider.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
