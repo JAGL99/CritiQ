@@ -1,11 +1,11 @@
-package com.jagl.critiq.core.database.daos
+package com.jagl.critiq.core.local.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.jagl.critiq.core.database.entities.MediaEntity
+import com.jagl.critiq.core.local.entities.MediaEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

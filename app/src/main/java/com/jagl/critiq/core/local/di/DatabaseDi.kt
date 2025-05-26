@@ -1,11 +1,11 @@
-package com.jagl.critiq.core.database.di
+package com.jagl.critiq.core.local.di
 
 import android.content.Context
 import androidx.room.Room
-import com.jagl.critiq.core.database.AppDatabase
-import com.jagl.critiq.core.database.daos.MediaDao
-import com.jagl.critiq.core.database.source.MediaDataSourceImpl
-import com.jagl.critiq.core.database.source.MediaDataSource
+import com.jagl.critiq.core.local.AppDatabase
+import com.jagl.critiq.core.local.daos.MediaDao
+import com.jagl.critiq.core.local.source.LocalMediaDataSourceImpl
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,8 +41,8 @@ object DatabaseDi {
     @Provides
     fun provideMediaDataSource(
         mediaDao: MediaDao
-    ): MediaDataSource {
-        return MediaDataSourceImpl(mediaDao)
+    ): LocalMediaDataSource {
+        return LocalMediaDataSourceImpl(mediaDao)
     }
 
 }

@@ -1,4 +1,4 @@
-package com.jagl.critiq.core.utils.mappers
+package com.jagl.critiq.core.local.mappers
 
 interface MapperEntity<Entity, DomainModel> {
     fun toDomain(entity: Entity): DomainModel

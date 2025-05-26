@@ -1,9 +1,9 @@
-package com.jagl.critiq.core.database
+package com.jagl.critiq.core.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.jagl.critiq.core.database.daos.MediaDao
-import com.jagl.critiq.core.database.entities.MediaEntity
+import com.jagl.critiq.core.local.daos.MediaDao
+import com.jagl.critiq.core.local.entities.MediaEntity
 
 @Database(
     entities = [MediaEntity::class],
