@@ -20,7 +20,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArgument("runnerBuilder", "de.mannodermaus.junit5.AndroidJUnit5Builder")
+        testInstrumentationRunnerArgument(
+            "runnerBuilder",
+            "de.mannodermaus.junit5.AndroidJUnit5Builder"
+        )
     }
 
     buildTypes {
@@ -73,11 +76,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.kotlinx.coroutines.test)
+    implementation(libs.junit.jupiter.api)
+    implementation(libs.junit.jupiter.params)
+
     testImplementation(libs.turbine)
-    testImplementation (libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter.api)
-    testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.assertk)
     testImplementation(libs.mockk)
     testRuntimeOnly(libs.junit.jupiter.engine)
