@@ -1,6 +1,6 @@
-package com.jagl.critiq.domain.data
+package com.jagl.critiq.core.model
 
-data class MediaDomain(
+data class Media(
     val id: Long,
     val title: String,
     val posterPath: String,
@@ -8,6 +8,5 @@ data class MediaDomain(
     val type: String,
     val rating: Double,
     val releaseDate: String,
-    val description: String,
-    val page: Int
-) : Domain
+    val description: String
+)

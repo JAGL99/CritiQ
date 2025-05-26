@@ -1,4 +1,4 @@
-package com.jagl.critiq.core.utils
+package com.jagl.critiq.core.model
 
 import android.content.Context
 import androidx.core.content.ContextCompat
