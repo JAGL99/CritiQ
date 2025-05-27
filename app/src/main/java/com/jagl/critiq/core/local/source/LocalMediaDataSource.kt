@@ -1,13 +1,12 @@
 package com.jagl.critiq.core.local.source
 
-import com.jagl.critiq.core.model.Media
-import kotlinx.coroutines.flow.Flow
+import com.jagl.critiq.core.local.entities.MediaEntity
 
 interface LocalMediaDataSource {
-    fun getAll(): Flow<List<Media>>
-    fun getById(id: Long): Flow<Media?>
-    suspend fun insertAll(domain: List<Media>)
-    suspend fun insert(domain: Media)
+    fun getAll(): List<MediaEntity>
+    fun getById(id: Long): MediaEntity?
+    suspend fun insertAll(entities: List<MediaEntity>)
+    suspend fun insert(entity: MediaEntity)
     suspend fun deleteAll()
-    suspend fun delete(domain: Media)
+    suspend fun delete(entity: MediaEntity)
 }

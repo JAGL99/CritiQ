@@ -18,10 +18,10 @@ interface MediaDao {
     suspend fun insertAllMedia(mediaList: List<MediaEntity>)
 
     @Query("SELECT * FROM media WHERE id = :mediaId")
-    fun getMediaById(mediaId: Long): Flow<MediaEntity?>
+    fun getMediaById(mediaId: Long): MediaEntity?
 
     @Query("SELECT * FROM media")
-    fun getAllMedia(): Flow<List<MediaEntity>>
+    fun getAllMedia(): List<MediaEntity>
 
     @Delete
     suspend fun deleteMedia(media: MediaEntity)
