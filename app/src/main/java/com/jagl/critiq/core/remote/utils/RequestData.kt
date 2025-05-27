@@ -3,7 +3,6 @@ package com.jagl.critiq.core.remote.utils
 import com.google.gson.Gson
 import com.jagl.critiq.core.model.ApiResult
 import com.jagl.critiq.core.remote.model.MovieDbApiError
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -37,5 +36,8 @@ object RequestData {
     )
 
     val DEFAULT_EXCEPTION_MESSAGE = "Unknown network error"
+
+    val INVALID_PAGE_ERROR =
+        "Invalid page: Pages start at 1 and max at 500. They are expected to be an integer."
 
 }

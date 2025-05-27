@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface MovieApi {
 
-    @GET("trending/all/day")
+    @GET("trending/movie/day")
     suspend fun getTrendings(
         @Query("language") language: String?,
         @Query("page") page: Int?,

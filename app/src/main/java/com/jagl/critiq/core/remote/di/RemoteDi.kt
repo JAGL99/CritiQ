@@ -1,8 +1,8 @@
 package com.jagl.critiq.core.remote.di
 
 import com.jagl.critiq.core.remote.api.MovieApi
-import com.jagl.critiq.core.remote.source.RemoteMediaDataSource
-import com.jagl.critiq.core.remote.source.RemoteMediaDataSourceImpl
+import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
+import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,10 +57,10 @@ object RemoteDi {
 
     @Singleton
     @Provides
-    fun provideMovieSource(
+    fun providePaginateMediaDataSource(
         movieApi: MovieApi
-    ): RemoteMediaDataSource {
-        return RemoteMediaDataSourceImpl(
+    ): RemotePaginateMediaDataSource {
+        return RemotePaginateMediaDataSourceImpl(
             movieApi
         )
     }

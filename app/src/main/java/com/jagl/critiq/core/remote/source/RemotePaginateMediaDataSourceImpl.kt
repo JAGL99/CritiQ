@@ -7,9 +7,9 @@ import com.jagl.critiq.core.remote.model.TrendingResponse
 import com.jagl.critiq.core.remote.utils.RequestData.safeCall
 import javax.inject.Inject
 
-class RemoteMediaDataSourceImpl @Inject constructor(
+class RemotePaginateMediaDataSourceImpl @Inject constructor(
     private val movieApi: MovieApi
-) : RemoteMediaDataSource {
+) : RemotePaginateMediaDataSource {
 
     override suspend fun getTrendings(
         page: Int?,
@@ -21,7 +21,8 @@ class RemoteMediaDataSourceImpl @Inject constructor(
                 language = language
             )
             val body = response.body()!!
-            body.results.map { media -> TrendingResponse.Result.toDomain(media) }
+            val mediaList = body.results.map { media -> TrendingResponse.Result.toDomain(media) }
+            mediaList
         }
     }
 }
