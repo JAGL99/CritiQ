@@ -3,101 +3,103 @@ package com.jagl.critiq.feature.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
-import com.jagl.critiq.core.utils.getMessage
-import com.jagl.critiq.feature.home.HomeViewModel.UiState
+import com.jagl.critiq.core.model.Media
+import com.jagl.critiq.core.ui.components.RatingBar
+import kotlinx.coroutines.flow.flow
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    HomeContent(modifier, uiState = uiState)
+    val items = viewModel.items.collectAsLazyPagingItems()
+    HomeContent(modifier, items)
 }
 
 @Composable
-fun HomeContent(
+private fun HomeContent(
     modifier: Modifier = Modifier.fillMaxSize(),
-    uiState: UiState
+    items: LazyPagingItems<Media>
 ) {
-
-    val context = LocalContext.current
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         modifier = Modifier.then(modifier)
     ) {
 
-        when (uiState) {
-            is UiState.Error -> {
-                Text(
-                    text = uiState.message.getMessage(context),
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+        ) {
 
-            UiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+            items(items.itemCount) { index ->
+                val item = items[index]!!
+                Card(modifier = Modifier.padding(8.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxWidth(),
+                            model = item.backdropPath,
+                            contentDescription = item.title,
+                        )
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Text(
+                            text = item.title,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        RatingBar(rating = item.rating)
+
+                    }
                 }
             }
 
-            is UiState.Success -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                ) {
-                    items(uiState.data) { item ->
-                        Card(modifier = Modifier.padding(8.dp)) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(4.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+            items.apply {
+                when {
+                    loadState.append is LoadState.Loading -> {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
                             ) {
-                                AsyncImage(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    model = item.imageUrl,
-                                    contentDescription = item.title,
-                                )
-                                Spacer(modifier = Modifier.padding(4.dp))
-                                Text(text = item.title)
-                                Spacer(modifier = Modifier.padding(4.dp))
-                                RatingBar(
-                                    modifier = Modifier.padding(4.dp),
-                                    rating = item.rating
-                                )
-
+                                CircularProgressIndicator()
                             }
                         }
+                    }
+
+                    loadState.append is LoadState.Error -> {
+                        item {
+                            Text(
+                                text = "Error loading more items",
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+
                     }
                 }
             }
@@ -105,32 +107,47 @@ fun HomeContent(
     }
 }
 
-@Composable
-fun RatingBar(
-    modifier: Modifier = Modifier,
-    rating: Double
-) {
-    Row {
-        (1..5).forEach { index ->
-            val star = if (index <= rating / 2) {
-                Icons.Filled.Favorite
-            } else {
-                Icons.Outlined.FavoriteBorder
-            }
-            Icon(
-                imageVector = star,
-                contentDescription = null,
-                tint = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                modifier = modifier.padding(2.dp)
-            )
-
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    val uiState = UiState.Success(emptyList())
-    HomeContent(uiState = uiState)
+    HomeContent(
+        items = flow<PagingData<Media>> {
+            emit(
+                PagingData.from(
+                    listOf(
+                        Media(
+                            1,
+                            "Movie 1",
+                            "https://example.com/poster1.jpg",
+                            "https://example.com/backdrop1.jpg",
+                            "movie",
+                            8.5,
+                            "2023-01-01",
+                            "Description 1"
+                        ),
+                        Media(
+                            2,
+                            "Movie 2",
+                            "https://example.com/poster2.jpg",
+                            "https://example.com/backdrop2.jpg",
+                            "movie",
+                            7.0,
+                            "2023-02-01",
+                            "Description 2"
+                        ),
+                        Media(
+                            3,
+                            "Movie 3",
+                            "https://example.com/poster3.jpg",
+                            "https://example.com/backdrop3.jpg",
+                            "movie",
+                            9.0,
+                            "2023-03-01",
+                            "Description 3"
+                        )
+                    )
+                )
+            )
+        }.collectAsLazyPagingItems(),
+    )
 }
