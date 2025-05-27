@@ -25,7 +25,12 @@ fun mediaPairPage(page: Int): Pair<Int, List<Media>> {
     return Pair(
         page,
         (1..5).map {
-            media()
+            media().copy(
+                id = (it + (page - 1) * 5).toLong(),
+                title = "Test Title $it - Page $page",
+                posterPath = "https://example.com/poster_$it.jpg",
+                backdropPath = "https://example.com/backdrop_$it.jpg"
+            )
         }
     )
 }

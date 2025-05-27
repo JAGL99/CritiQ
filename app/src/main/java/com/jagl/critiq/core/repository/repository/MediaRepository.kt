@@ -1,9 +1,9 @@
 package com.jagl.critiq.core.repository.repository
 
-import com.jagl.critiq.domain.data.MediaDomain
+import com.jagl.critiq.core.model.Media
 import kotlinx.coroutines.flow.Flow
 
 interface MediaRepository {
-    fun getMediaList(): Flow<List<MediaDomain>>
-    fun loadNextPage(nextPage: Int): Flow<List<MediaDomain>>
+
+    fun getMediaByPageAndLanguage(page: Int?, language: String?): Flow<List<Media>>
 }
