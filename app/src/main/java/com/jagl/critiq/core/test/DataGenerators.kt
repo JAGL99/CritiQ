@@ -1,5 +1,6 @@
 package com.jagl.critiq.core.test
 
+import com.jagl.critiq.core.local.entities.MediaEntity
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.remote.model.MovieDbApiError
 
@@ -14,6 +15,10 @@ fun media(): Media {
         releaseDate = "2023-01-01",
         description = "This is a test description."
     )
+}
+
+fun mediaEntity(): MediaEntity {
+    return MediaEntity.toEntity(media())
 }
 
 fun mediaPairPage(page: Int): Pair<Int, List<Media>> {

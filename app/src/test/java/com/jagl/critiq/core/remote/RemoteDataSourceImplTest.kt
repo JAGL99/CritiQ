@@ -1,4 +1,4 @@
-package com.jagl.critiq.core.remote.source
+package com.jagl.critiq.core.remote
 
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -6,6 +6,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import com.jagl.critiq.core.model.ApiResult
+import com.jagl.critiq.core.remote.source.RemoteMediaDataSource
 import com.jagl.critiq.core.remote.utils.RequestData
 import com.jagl.critiq.core.test.fake.RemoteMediaDataSourceFake
 import com.jagl.critiq.core.test.movieDbApiError
@@ -69,7 +70,7 @@ class RemoteMediaDataSourceTest {
 
     @Test
     fun `Request trendings by page and language, get the result asociated to the page and language`()
-    : Unit = runBlocking {
+            : Unit = runBlocking {
         val result = remoteMediaDataSource.getTrendings(page = 1, language = "it-IT")
         val data = (result as ApiResult.Success).data
         assertThat(data).hasSize(5)

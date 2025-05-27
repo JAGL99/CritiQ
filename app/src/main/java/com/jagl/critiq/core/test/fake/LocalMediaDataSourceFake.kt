@@ -3,8 +3,6 @@ package com.jagl.critiq.core.test.fake
 import com.jagl.critiq.core.local.entities.MediaEntity
 import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 
 class LocalMediaDataSourceFake : LocalMediaDataSource {
@@ -21,11 +19,22 @@ class LocalMediaDataSourceFake : LocalMediaDataSource {
     }
 
     override suspend fun insertAll(entities: List<MediaEntity>) {
-        mediaList.update { it + entities }
+        val ids = entities.map { it.id }.toSet()
+        val newEntities = ids.map { id ->
+            val entitiesWithSameId = entities.filter { it.id == id }
+            if (entitiesWithSameId.count() == 1) {
+                entitiesWithSameId.first()
+            } else {
+                val lastEntity = entitiesWithSameId.last()
+                lastEntity
+            }
+        }
+        newEntities.forEach { entity -> insert(entity) }
     }
 
     override suspend fun insert(entity: MediaEntity) {
-        mediaList.update { it + listOf(entity).toSet() }
+        val existingEntities = mediaList.value.filter { it.id != entity.id }
+        mediaList.update { existingEntities + listOf(entity).toSet() }
     }
 
     override suspend fun deleteAll() {
@@ -33,8 +42,7 @@ class LocalMediaDataSourceFake : LocalMediaDataSource {
     }
 
     override suspend fun delete(entity: MediaEntity) {
-        mediaList.filter { it.any { media -> media.id == entity.id } }
-            .first()
-            .let { media -> mediaList.update { it - media.toSet() } }
+        mediaList.value.filter { it.id != entity.id }
+            .let { filteredList -> mediaList.update { filteredList } }
     }
 }
