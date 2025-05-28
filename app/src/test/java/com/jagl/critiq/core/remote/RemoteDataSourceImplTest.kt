@@ -6,9 +6,9 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import com.jagl.critiq.core.model.ApiResult
-import com.jagl.critiq.core.remote.source.RemoteMediaDataSource
+import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
 import com.jagl.critiq.core.remote.utils.RequestData
-import com.jagl.critiq.core.test.fake.RemoteMediaDataSourceFake
+import com.jagl.critiq.core.test.fake.RemotePaginateMediaDataSourceFake
 import com.jagl.critiq.core.test.movieDbApiError
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
@@ -16,13 +16,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
-class RemoteMediaDataSourceTest {
+class RemotePaginateMediaDataSourceTest {
 
-    private lateinit var remoteMediaDataSource: RemoteMediaDataSource
+    private lateinit var remotePaginateMediaDataSource: RemotePaginateMediaDataSource
 
     @BeforeEach
     fun setUp() {
-        remoteMediaDataSource = RemoteMediaDataSourceFake()
+        remotePaginateMediaDataSource = RemotePaginateMediaDataSourceFake()
     }
 
     @ParameterizedTest
@@ -37,7 +37,7 @@ class RemoteMediaDataSourceTest {
         language: String,
         resultSize: Int
     ): Unit = runBlocking {
-        val result = remoteMediaDataSource.getTrendings(page = null, language = language)
+        val result = remotePaginateMediaDataSource.getTrendings(page = null, language = language)
         assertThat(result).isInstanceOf(ApiResult.Success::class)
         val data = (result as ApiResult.Success).data
         assertThat(data).hasSize(resultSize)
@@ -46,7 +46,7 @@ class RemoteMediaDataSourceTest {
     @Test
     fun `Request trendings with  null language and null page, get all the results`(): Unit =
         runBlocking {
-            val result = remoteMediaDataSource.getTrendings(page = null, language = null)
+            val result = remotePaginateMediaDataSource.getTrendings(page = null, language = null)
             val data = (result as ApiResult.Success).data
             assertThat(data).hasSize(75)
         }
@@ -63,7 +63,7 @@ class RemoteMediaDataSourceTest {
         page: Int,
         resultSize: Int
     ): Unit = runBlocking {
-        val result = remoteMediaDataSource.getTrendings(page = page, language = null)
+        val result = remotePaginateMediaDataSource.getTrendings(page = page, language = null)
         val data = (result as ApiResult.Success).data
         assertThat(data).hasSize(resultSize)
     }
@@ -71,14 +71,14 @@ class RemoteMediaDataSourceTest {
     @Test
     fun `Request trendings by page and language, get the result asociated to the page and language`()
             : Unit = runBlocking {
-        val result = remoteMediaDataSource.getTrendings(page = 1, language = "it-IT")
+        val result = remotePaginateMediaDataSource.getTrendings(page = 1, language = "it-IT")
         val data = (result as ApiResult.Success).data
         assertThat(data).hasSize(5)
     }
 
     @Test
     fun `Get trendings with invalid language and invalid page, get empty list`() = runBlocking {
-        val result = remoteMediaDataSource.getTrendings(page = 100, language = "xx-XX")
+        val result = remotePaginateMediaDataSource.getTrendings(page = 100, language = "xx-XX")
         assertThat(result).isInstanceOf(ApiResult.Success::class)
         val data = (result as ApiResult.Success).data
         assertThat(data).isEmpty()
@@ -86,7 +86,7 @@ class RemoteMediaDataSourceTest {
 
     @Test
     fun `Get trendings with invalid language and null page, get full medias`() = runBlocking {
-        val result = remoteMediaDataSource.getTrendings(page = null, language = "xx-XX")
+        val result = remotePaginateMediaDataSource.getTrendings(page = null, language = "xx-XX")
         assertThat(result).isInstanceOf(ApiResult.Success::class)
         val data = (result as ApiResult.Success).data
         assertThat(data).hasSize(75)
@@ -94,7 +94,7 @@ class RemoteMediaDataSourceTest {
 
     @Test
     fun `Get trendings with null language and valid page, get empty list`() = runBlocking {
-        val result = remoteMediaDataSource.getTrendings(page = 100, language = null)
+        val result = remotePaginateMediaDataSource.getTrendings(page = 100, language = null)
         assertThat(result).isInstanceOf(ApiResult.Success::class)
         val data = (result as ApiResult.Success).data
         assertThat(data).isEmpty()
@@ -103,11 +103,11 @@ class RemoteMediaDataSourceTest {
     @Test
     fun `Get trendings with mapped error, should return mapped error message`() = runBlocking {
         RequestData.NETWORK_EXCEPTIONS.forEach { exception ->
-            remoteMediaDataSource = RemoteMediaDataSourceFake(
+            remotePaginateMediaDataSource = RemotePaginateMediaDataSourceFake(
                 shouldReturnError = true,
                 exception = exception
             )
-            val result = remoteMediaDataSource.getTrendings(page = null, language = "en-US")
+            val result = remotePaginateMediaDataSource.getTrendings(page = null, language = "en-US")
             val errorMessage = (result as ApiResult.Error).message
             assertThat(errorMessage).isEqualTo(exception.message)
         }
@@ -115,8 +115,8 @@ class RemoteMediaDataSourceTest {
 
     @Test
     fun `Get trendings with generic error, should return generic error message`() = runBlocking {
-        remoteMediaDataSource = RemoteMediaDataSourceFake(shouldReturnError = true)
-        val result = remoteMediaDataSource.getTrendings(page = null, language = "en-US")
+        remotePaginateMediaDataSource = RemotePaginateMediaDataSourceFake(shouldReturnError = true)
+        val result = remotePaginateMediaDataSource.getTrendings(page = null, language = "en-US")
         assertThat(result).isInstanceOf(ApiResult.Error::class)
         val errorMessage = (result as ApiResult.Error).message
         assertThat(errorMessage).isEqualTo(RequestData.DEFAULT_EXCEPTION_MESSAGE)
@@ -125,11 +125,11 @@ class RemoteMediaDataSourceTest {
     @Test
     fun `Get trendings with custom error, should return custom error message`() = runBlocking {
         val customError = Exception("Custom error message")
-        remoteMediaDataSource = RemoteMediaDataSourceFake(
+        remotePaginateMediaDataSource = RemotePaginateMediaDataSourceFake(
             shouldReturnError = true,
             exception = customError
         )
-        val result = remoteMediaDataSource.getTrendings(page = null, language = "en-US")
+        val result = remotePaginateMediaDataSource.getTrendings(page = null, language = "en-US")
         val errorMessage = (result as ApiResult.Error).message
         assertThat(errorMessage).isEqualTo(customError.message)
     }
@@ -137,7 +137,7 @@ class RemoteMediaDataSourceTest {
     @Test
     fun `Get trendings with negative page, should return movie db error`() = runBlocking {
         val expectedErrorMessage = movieDbApiError().statusMessage
-        val result = remoteMediaDataSource.getTrendings(page = -1, language = null)
+        val result = remotePaginateMediaDataSource.getTrendings(page = -1, language = null)
         val errorMessage = (result as ApiResult.Error).message
         assertThat(errorMessage).isEqualTo(expectedErrorMessage)
     }

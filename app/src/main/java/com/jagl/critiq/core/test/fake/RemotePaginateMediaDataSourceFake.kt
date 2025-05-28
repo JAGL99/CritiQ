@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.jagl.critiq.core.model.ApiResult
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.remote.model.MovieDbApiError
-import com.jagl.critiq.core.remote.source.RemoteMediaDataSource
+import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
 import com.jagl.critiq.core.remote.utils.RequestData
 import com.jagl.critiq.core.test.listOfLanguagePairMediaWithPage
 import com.jagl.critiq.core.test.movieDbApiError
@@ -13,11 +13,11 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
 
-class RemoteMediaDataSourceFake(
+class RemotePaginateMediaDataSourceFake(
     private val mediaList: List<Pair<String, List<Pair<Int, List<Media>>>>> = listOfLanguagePairMediaWithPage(),
     private val shouldReturnError: Boolean = false,
     private val exception: Exception = Exception()
-) : RemoteMediaDataSource {
+) : RemotePaginateMediaDataSource {
 
 
     override suspend fun getTrendings(
