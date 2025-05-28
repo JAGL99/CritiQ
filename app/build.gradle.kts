@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.dagger.hilt.compiler)
 
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.android.compiler)
+
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
@@ -95,6 +98,8 @@ dependencies {
     implementation(libs.junit.jupiter.params)
 
     testImplementation(libs.turbine)
+    androidTestImplementation(libs.turbine)
+
     testImplementation(libs.junit)
     testImplementation(libs.assertk)
     testImplementation(libs.mockk)
