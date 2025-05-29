@@ -19,11 +19,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArgument(
-            "runnerBuilder",
-            "de.mannodermaus.junit5.AndroidJUnit5Builder"
-        )
+        testInstrumentationRunner = "com.jagl.critiq.core.common.HiltTestRunner"
     }
 
     buildTypes {
@@ -72,9 +68,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.dagger.hilt.compiler)
 
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.android.compiler)
-
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
@@ -93,21 +86,27 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation(libs.androidx.paging.common.ktx)
+
     implementation(libs.kotlinx.coroutines.test)
     implementation(libs.junit.jupiter.api)
     implementation(libs.junit.jupiter.params)
+    implementation(libs.androidx.ui.test.junit4)
 
     testImplementation(libs.turbine)
-    androidTestImplementation(libs.turbine)
-
     testImplementation(libs.junit)
     testImplementation(libs.assertk)
     testImplementation(libs.mockk)
+    testImplementation(libs.junit5.test.core)
 
+    kspAndroidTest(libs.hilt.android.compiler)
     testRuntimeOnly(libs.junit.jupiter.engine)
 
+    androidTestImplementation ("androidx.test:runner:1.5.0")
+    androidTestImplementation ("androidx.test:rules:1.5.0")
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.junit5.test.core)
+    androidTestImplementation("androidx.test:core-ktx:1.5.0")
     androidTestImplementation(libs.assertk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

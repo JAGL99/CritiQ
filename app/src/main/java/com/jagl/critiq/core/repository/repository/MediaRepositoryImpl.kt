@@ -32,7 +32,7 @@ class MediaRepositoryImpl @Inject constructor(
             { localPaginationMediaDataSource.getAll() }
 
         return Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = PAGE_SIZE),
             remoteMediator = MediaRemoteMediator(
                 database = database,
                 localPaginationMediaDataSource = localPaginationMediaDataSource,
@@ -41,5 +41,9 @@ class MediaRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = pagingSourceFactory
         ).flow.map { it.map(MediaEntity::toDomain) }.flowOn(dispatcherProvider.io)
+    }
+
+    companion object{
+        private const val PAGE_SIZE = 20
     }
 }
