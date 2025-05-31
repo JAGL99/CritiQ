@@ -1,5 +1,6 @@
 package com.jagl.critiq.core.test
 
+import androidx.paging.PagingSource
 import com.jagl.critiq.core.local.entities.MediaEntity
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.remote.model.MovieDbApiError
@@ -64,6 +65,14 @@ fun languagePairMediaWithPage(
     return Pair(
         language,
         mutableList
+    )
+}
+
+fun paginSourceRefresh(): PagingSource.LoadParams.Refresh<Int> {
+    return PagingSource.LoadParams.Refresh(
+        key = null,
+        loadSize = 0,
+        placeholdersEnabled = false
     )
 }
 
