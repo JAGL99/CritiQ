@@ -1,6 +1,5 @@
 package com.jagl.critiq.feature.search
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jagl.critiq.core.model.UiMessage
 import com.jagl.critiq.core.model.getMessage
+import com.jagl.critiq.core.test.media
 import com.jagl.critiq.core.ui.composables.Loading
 import com.jagl.critiq.core.ui.composables.NotAvable
 import com.jagl.critiq.core.ui.extensions.fullScreen
@@ -25,7 +25,8 @@ import com.jagl.critiq.core.ui.extensions.fullScreen
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
+    onMediaSelected: (Long) -> Unit
 ) {
 
     val uiState = viewModel.uiState.collectAsState()
@@ -35,13 +36,7 @@ fun SearchScreen(
         viewModel.uiEvents.collect { event ->
             when (event) {
                 SearcherUiEvents.Search -> viewModel.onEvent(SearcherUiEvents.Search)
-                is SearcherUiEvents.MediaSelected -> {
-                    Toast.makeText(
-                        context,
-                        "Media selected: ${event.mediaId}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                is SearcherUiEvents.MediaSelected -> onMediaSelected(event.mediaId)
 
                 else -> Unit
             }
@@ -100,9 +95,9 @@ fun SearchContent(
                     Spacer(modifier = Modifier.height(4.dp))
                 }
                 Text(
-                    text = result,
+                    text = result.title,
                     modifier = Modifier.clickable {
-                        onEvent(SearcherUiEvents.MediaSelected(result.hashCode().toLong()))
+                        onEvent(SearcherUiEvents.MediaSelected(result.id))
                     }
                 )
 
@@ -127,11 +122,10 @@ fun SearchResultsMessage(
 @Preview(showBackground = true)
 @Composable
 private fun SearchScreenPreview() {
+    val results = (1..5).map { media().copy(title = "Title $it") }
     val uiState = SearcherUiState().copy(
-        searchQuery = "Search Query",
-        results = listOf(
-            "Result 1", "Result 2", "Result 3"
-        ),
+        searchQuery = "title",
+        results = results,
         isLoading = false
     )
     SearchContent(

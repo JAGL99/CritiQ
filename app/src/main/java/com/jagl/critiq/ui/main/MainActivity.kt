@@ -51,9 +51,9 @@ fun MainScreen() {
         val graph = navController.createGraph(startDestination = Screen.Home.route) {
             composable(route = Screen.Home.route) {
                 HomeScreen(
-                    onNavigateToDetail = { id ->
+                    onNavigateToDetail = { mediaId ->
                         navController.navigate(
-                            route = Screen.Detail.route + "/$id"
+                            route = Screen.Detail.route + "/$mediaId"
                         )
                     }
                 )
@@ -67,7 +67,13 @@ fun MainScreen() {
                 MediaDetailScreen()
             }
             composable(route = Screen.Search.route) {
-                SearchScreen()
+                SearchScreen(
+                    onMediaSelected = { mediaId ->
+                        navController.navigate(
+                            route = Screen.Detail.route + "/$mediaId"
+                        )
+                    }
+                )
             }
             composable(route = Screen.Profile.route) {
                 TODO("Profile Screen not implemented yet")
