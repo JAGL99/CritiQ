@@ -17,19 +17,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.jagl.critiq.core.ui.components.Loading
-import com.jagl.critiq.core.ui.components.NotAvable
+import com.jagl.critiq.core.ui.composables.Loading
+import com.jagl.critiq.core.ui.composables.NotAvable
 import com.jagl.critiq.core.ui.extensions.fullScreen
 
 @Composable
 fun SearchScreen(
-    modifier: Modifier = Modifier.fullScreen(),
-    viewModel: SearchViewModel = hiltViewModel(),
-    onBackPressed: () -> Unit
+    modifier: Modifier = Modifier,
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
 
     val uiState = viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.uiEvents.collect { event ->
             when (event) {
@@ -46,9 +46,8 @@ fun SearchScreen(
             }
         }
     }
-    BackHandler { onBackPressed() }
     SearchContent(
-        modifier = modifier,
+        modifier = modifier.fullScreen(),
         uiState = uiState.value,
         onEvent = viewModel::onEvent
     )
@@ -56,7 +55,7 @@ fun SearchScreen(
 
 @Composable
 fun SearchContent(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     uiState: SearcherUiState,
     onEvent: (SearcherUiEvents) -> Unit
 ) {
