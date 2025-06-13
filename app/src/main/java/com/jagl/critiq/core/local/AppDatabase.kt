@@ -2,7 +2,7 @@ package com.jagl.critiq.core.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.jagl.critiq.core.local.daos.PaginateMediaDao
+import com.jagl.critiq.core.local.daos.MediaDao
 import com.jagl.critiq.core.local.entities.MediaEntity
 
 @Database(
@@ -12,7 +12,7 @@ import com.jagl.critiq.core.local.entities.MediaEntity
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun mediaDao(): PaginateMediaDao
+    abstract fun mediaDao(): MediaDao
 
     companion object {
         const val DATABASE_NAME = "critiq_database"

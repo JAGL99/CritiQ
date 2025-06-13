@@ -12,7 +12,7 @@ import assertk.assertions.isNotNull
 import com.jagl.critiq.core.common.CriticQAndroidTest
 import com.jagl.critiq.core.local.AppDatabase
 import com.jagl.critiq.core.local.entities.MediaEntity
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
 import com.jagl.critiq.core.repository.repository.MediaRepository
@@ -36,7 +36,7 @@ class MediaRepositoryTest : CriticQAndroidTest() {
     val mainCoroutineRule = MainCoroutineRule()
 
     @Inject
-    lateinit var localDataSource: LocalPaginationMediaDataSource
+    lateinit var localDataSource: LocalMediaDataSource
 
     @Inject
     lateinit var database: AppDatabase
@@ -53,7 +53,7 @@ class MediaRepositoryTest : CriticQAndroidTest() {
         remoteDataSource = RemotePaginateMediaDataSourceFake(mediaList = mediaList)
         repository = MediaRepositoryImpl(
             remotePaginateMediaDataSource = remoteDataSource,
-            localPaginationMediaDataSource = localDataSource,
+            localMediaDataSource = localDataSource,
             dispatcherProvider = TestDispatchers(),
             database = database
         )

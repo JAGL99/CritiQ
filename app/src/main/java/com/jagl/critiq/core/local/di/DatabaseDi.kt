@@ -3,9 +3,9 @@ package com.jagl.critiq.core.local.di
 import android.content.Context
 import androidx.room.Room
 import com.jagl.critiq.core.local.AppDatabase
-import com.jagl.critiq.core.local.daos.PaginateMediaDao
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSourceImpl
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
+import com.jagl.critiq.core.local.daos.MediaDao
+import com.jagl.critiq.core.local.source.LocalMediaDataSourceImpl
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,16 +33,16 @@ object DatabaseDi {
     @Provides
     fun provideMediaDao(
         appDatabase: AppDatabase
-    ): PaginateMediaDao {
+    ): MediaDao {
         return appDatabase.mediaDao()
     }
 
     @Singleton
     @Provides
     fun provideMediaDataSource(
-        paginateMediaDao: PaginateMediaDao
-    ): LocalPaginationMediaDataSource {
-        return LocalPaginationMediaDataSourceImpl(paginateMediaDao)
+        mediaDao: MediaDao
+    ): LocalMediaDataSource {
+        return LocalMediaDataSourceImpl(mediaDao)
     }
 
 }

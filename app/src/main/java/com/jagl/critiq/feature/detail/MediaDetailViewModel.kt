@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jagl.critiq.R
 import com.jagl.critiq.core.common.dispatcherProvider.DispatcherProvider
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import com.jagl.critiq.core.model.UiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MediaDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val localPaginationMediaDataSource: LocalPaginationMediaDataSource,
+    private val localMediaDataSource: LocalMediaDataSource,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ class MediaDetailViewModel @Inject constructor(
                 println("Media favorite status before update: ${media.isFavorite}")
                 val updatedMedia = media.copy(isFavorite = !media.isFavorite)
                 println("Updating media favorite status: ${updatedMedia.isFavorite}")
-                localPaginationMediaDataSource.upsertAll(listOf(updatedMedia))
+                localMediaDataSource.upsertAll(listOf(updatedMedia))
                 _uiState.update { currentState.copy(media = updatedMedia) }
             }
         }
@@ -52,7 +52,7 @@ class MediaDetailViewModel @Inject constructor(
 
     private fun init() = viewModelScope.launch(dispatcherProvider.default) {
         println("MediaDetailViewModel initialized with mediaId: $mediaId")
-        val media = localPaginationMediaDataSource.getById(mediaId)
+        val media = localMediaDataSource.getById(mediaId)
         if (media != null) {
             _uiState.value = MediaDetailUiState(
                 isLoading = false,
