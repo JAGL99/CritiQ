@@ -11,11 +11,12 @@ env:
 
 jobs:
 
-  build-and-test:
+  run-unit-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up JDK
         uses: actions/setup-java@v2
@@ -26,32 +27,29 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build and test
-        run: ./gradlew build test
+      - name: Run tests
+        run: ./gradlew test
 
   merge-develop-to-main:
-    needs: build-and-test
+    needs: run-unit-tests
     runs-on: ubuntu-latest
     permissions:
       contents: write
     
     steps:
-      # Checkout del repositorio completo con histórico
-      - name: Checkout código
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
-      # Configuración del usuario de Git
-      - name: Configurar Git
+
+      - name: Git configuration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_DEPLOY_KEY }}@github.com/JAGL99/CritiQ.git
 
-      # Fusionar develop en main
-      - name: Fusionar develop en main
+      - name: Merge develop into main
         run: |
           git checkout main
           git pull origin main
