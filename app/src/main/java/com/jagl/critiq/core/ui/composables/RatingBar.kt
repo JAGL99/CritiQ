@@ -1,4 +1,4 @@
-package com.jagl.critiq.core.ui.components
+package com.jagl.critiq.core.ui.composables
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
