@@ -14,7 +14,8 @@ fun media(): Media {
         type = "movie",
         rating = 8.5,
         releaseDate = "2023-01-01",
-        description = "This is a test description."
+        description = "This is a test description.",
+        language = "en",
     )
 }
 

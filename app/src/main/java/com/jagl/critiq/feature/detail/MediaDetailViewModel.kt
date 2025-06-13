@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,6 +34,21 @@ class MediaDetailViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000L),
                 initialValue = MediaDetailUiState()
             )
+
+    fun onEvent(event: MediaDetailUiEvents) = viewModelScope.launch {
+        when (event) {
+            MediaDetailUiEvents.OnFavoriteClick -> {
+                val currentState = _uiState.value
+                val media = currentState.media ?: return@launch
+                println("Media favorite status before update: ${media.isFavorite}")
+                val updatedMedia = media.copy(isFavorite = !media.isFavorite)
+                println("Updating media favorite status: ${updatedMedia.isFavorite}")
+                localPaginationMediaDataSource.upsertAll(listOf(updatedMedia))
+                _uiState.update { currentState.copy(media = updatedMedia) }
+            }
+        }
+    }
+
 
     private fun init() = viewModelScope.launch(dispatcherProvider.default) {
         println("MediaDetailViewModel initialized with mediaId: $mediaId")

@@ -19,14 +19,16 @@ fun MediaDetailScreen(
     val uiState = viewModel.uiState.collectAsState()
     MediaDetailContent(
         modifier = modifier,
-        uiState = uiState.value
+        uiState = uiState.value,
+        onEvent = viewModel::onEvent
     )
 }
 
 @Composable
 fun MediaDetailContent(
     modifier: Modifier,
-    uiState: MediaDetailUiState
+    uiState: MediaDetailUiState,
+    onEvent: (MediaDetailUiEvents) -> Unit
 ) {
     Box {
 
@@ -37,7 +39,8 @@ fun MediaDetailContent(
         uiState.media?.let { media ->
             MediaDetailComponent(
                 modifier = modifier,
-                media = media
+                media = media,
+                onEvent = onEvent
             )
         } ?: NotAvable(
             modifier = modifier,
@@ -55,6 +58,7 @@ fun MediaDetailScreenPreview() {
     val uiState = MediaDetailUiState().copy(isLoading = true)
     MediaDetailContent(
         modifier = Modifier.fullScreen(),
-        uiState = uiState
+        uiState = uiState,
+        onEvent = {}
     )
 }

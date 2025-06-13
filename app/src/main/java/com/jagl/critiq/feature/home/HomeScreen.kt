@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -24,20 +26,28 @@ import kotlinx.coroutines.flow.flow
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToDetail: (Long) -> Unit
 ) {
     val items = viewModel.items.collectAsLazyPagingItems()
-    HomeContent(modifier, items, onNavigateToDetail)
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvents.collect { event ->
+            when (event) {
+                is HomeViewModel.UiEvent.OnMediaClick -> onNavigateToDetail(event.id)
+            }
+        }
+    }
+
+    HomeContent(items, viewModel::onEvent)
 }
 
 @Composable
 private fun HomeContent(
-    modifier: Modifier = Modifier.fullScreen(),
     items: LazyPagingItems<Media>,
-    onClick: (Long) -> Unit
+    onEvent: (HomeViewModel.UiEvent) -> Unit
 ) {
+    val modifier = Modifier.fullScreen(padding = 4.dp)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -48,11 +58,7 @@ private fun HomeContent(
         ) {
 
             items(items.itemCount) { index ->
-                /*
-                .fullScreen(padding = 4.dp)
-                            .clickable { onClick(item.id) },
-                 */
-                items[index]?.let { item -> MovieItem(media = item) }
+                items[index]?.let { item -> MovieItem(media = item, onEvent = onEvent) }
             }
 
             items.apply {
@@ -88,7 +94,7 @@ fun HomeScreenPreview() {
     val items = flow { emit(PagingData.from(medias)) }.collectAsLazyPagingItems()
     HomeContent(
         items = items,
-        onClick = {}
+        onEvent = {}
     )
 }
 

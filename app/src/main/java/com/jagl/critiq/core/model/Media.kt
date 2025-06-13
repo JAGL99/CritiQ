@@ -7,6 +7,8 @@ data class Media(
     val backdropPath: String,
     val type: String,
     val rating: Double,
+    val language: String,
     val releaseDate: String,
-    val description: String
+    val description: String,
+    val isFavorite: Boolean = false
 )

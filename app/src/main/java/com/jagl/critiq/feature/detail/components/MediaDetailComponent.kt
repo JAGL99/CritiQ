@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,15 +26,16 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.test.media
-import com.jagl.critiq.core.ui.components.RatingBar
+import com.jagl.critiq.core.ui.composables.RatingBar
 import com.jagl.critiq.core.ui.extensions.fullScreen
+import com.jagl.critiq.feature.detail.MediaDetailUiEvents
 
 @Composable
 fun MediaDetailComponent(
     modifier: Modifier = Modifier,
-    media: Media
+    media: Media,
+    onEvent: (MediaDetailUiEvents) -> Unit,
 ) {
-    var isFavorite = remember { false }
     Column(
         modifier = Modifier
             .then(modifier)
@@ -70,6 +70,12 @@ fun MediaDetailComponent(
             lineHeight = 28.sp,
             text = "Release Date: ${media.releaseDate}"
         )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            fontSize = 20.sp,
+            lineHeight = 24.sp,
+            text = "Original language: ${media.language}"
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Row {
             Text(
@@ -80,16 +86,14 @@ fun MediaDetailComponent(
             Spacer(modifier = Modifier.width(8.dp))
             RatingBar(rating = media.rating)
         }
-
         Spacer(modifier = Modifier.height(4.dp))
+
+
         IconButton(
-            onClick = {
-                println("Favorite button clicked")
-                isFavorite = !isFavorite
-                println("Is favorite: $isFavorite")
-            },
+            onClick = { onEvent(MediaDetailUiEvents.OnFavoriteClick) },
             modifier = Modifier.align(Alignment.End)
         ) {
+            val isFavorite = media.isFavorite
             Icon(
                 imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = if (isFavorite) "Unfavorite" else "Favorite"
@@ -104,6 +108,7 @@ private fun MediaDetailComponentPreview() {
     val media = media()
     MediaDetailComponent(
         modifier = Modifier.fullScreen(),
-        media = media
+        media = media,
+        onEvent = {}
     )
 }
