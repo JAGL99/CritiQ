@@ -20,6 +20,7 @@ import com.jagl.critiq.core.repository.repository.MediaRepositoryImpl
 import com.jagl.critiq.core.test.TestDispatchers
 import com.jagl.critiq.core.test.fake.RemotePaginateMediaDataSourceFake
 import com.jagl.critiq.core.test.listOfLanguagePairMediaWithPage
+import com.jagl.critiq.core.test.paginSourceRefresh
 import com.jagl.critiq.core.test.rule.MainCoroutineRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -48,11 +49,7 @@ class MediaRepositoryTest : CriticQAndroidTest() {
     override fun setUp() {
         super.setUp()
         mediaList = listOfLanguagePairMediaWithPage()
-        pagingSourceParams = PagingSource.LoadParams.Refresh(
-            key = null,
-            loadSize = 0,
-            placeholdersEnabled = false
-        )
+        pagingSourceParams = paginSourceRefresh()
         remoteDataSource = RemotePaginateMediaDataSourceFake(mediaList = mediaList)
         repository = MediaRepositoryImpl(
             remotePaginateMediaDataSource = remoteDataSource,

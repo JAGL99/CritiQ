@@ -23,7 +23,6 @@ class MediaRemoteMediator(
 ) : RemoteMediator<Int, MediaEntity>() {
 
     override suspend fun initialize(): InitializeAction {
-        println("MediaRemoteMediator initialize called")
         last = 1
         return super.initialize()
     }
@@ -33,7 +32,6 @@ class MediaRemoteMediator(
         state: PagingState<Int, MediaEntity>
     ): MediatorResult {
         val mediatorResult: MediatorResult = try {
-            println("MediaRemoteMediator load called with loadType: $loadType, state: $state")
             val page = when (loadType) {
                 LoadType.REFRESH -> last
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
@@ -48,7 +46,9 @@ class MediaRemoteMediator(
                 return if (condition) {
                     MediatorResult.Success(endOfPaginationReached = true)
                 } else {
-                    MediatorResult.Error(Throwable(result.message))
+                    val throwable = Throwable(result.message)
+                    throwable.printStackTrace()
+                    MediatorResult.Error(throwable)
                 }
             }
 
@@ -70,8 +70,6 @@ class MediaRemoteMediator(
             e.printStackTrace()
             MediatorResult.Error(e)
         }
-
-        println("MediaRemoteMediator load completed with result: $mediatorResult")
         return mediatorResult
     }
 

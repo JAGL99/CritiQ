@@ -7,7 +7,8 @@ import com.jagl.critiq.core.local.entities.MediaEntity
 
 @Database(
     entities = [MediaEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
