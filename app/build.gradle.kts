@@ -116,3 +116,40 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+/**
+ * Custom Gradle task
+ */
+tasks.register("detectTodos") {
+    group = "verification"
+    description = "Detecta comentarios TODO en el código fuente"
+
+    doLast {
+        val android = project.extensions.getByName("android") as com.android.build.gradle.BaseExtension
+        val srcDirs = android.sourceSets["main"].java.srcDirs // Para Kotlin/Java
+
+        val todos = mutableListOf<String>()
+
+        srcDirs.forEach { dir ->
+            if (dir.exists()) {
+                dir.walk()
+                    .filter { it.isFile && (it.extension == "kt" || it.extension == "java") }
+                    .forEach { file ->
+                        file.forEachLine { line ->
+                            if (line.contains("TODO")) {
+                                todos.add("${file.relativeTo(dir)}: $line")
+                            }
+                        }
+                    }
+            }
+        }
+
+        if (todos.isNotEmpty()) {
+            println("\n=== TODOs encontrados (${todos.size}) ===")
+            todos.forEach { println(it) }
+            throw GradleException("Se encontraron ${todos.size} TODOs en el código. Por favor corrígelos.")
+        } else {
+            println("¡No se encontraron TODOs en el código!")
+        }
+    }
+}
