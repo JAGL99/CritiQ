@@ -43,7 +43,7 @@ class MediaRepositoryImpl @Inject constructor(
         ).flow.map { it.map(MediaEntity::toDomain) }.flowOn(dispatcherProvider.io)
     }
 
-    companion object{
-        private const val PAGE_SIZE = 20
+    companion object {
+        const val PAGE_SIZE = 20
     }
 }
