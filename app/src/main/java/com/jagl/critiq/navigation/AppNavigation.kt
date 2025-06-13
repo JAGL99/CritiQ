@@ -9,11 +9,12 @@ import androidx.navigation.navArgument
 import com.jagl.critiq.feature.detail.MediaDetailScreen
 import com.jagl.critiq.feature.detail.MediaDetailViewModel
 import com.jagl.critiq.feature.home.HomeScreen
+import com.jagl.critiq.feature.search.SearchScreen
 
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = "home") {
+    NavHost(navController, startDestination = "search") {
         composable("home") {
             HomeScreen(
                 onNavigateToDetail = { id ->
@@ -28,6 +29,9 @@ fun AppNavHost() {
             })
         ) {
             MediaDetailScreen()
+        }
+        composable("search") {
+            SearchScreen(onBackPressed = { navController.popBackStack() })
         }
     }
 }
