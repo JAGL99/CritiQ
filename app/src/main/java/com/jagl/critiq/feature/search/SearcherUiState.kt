@@ -6,5 +6,6 @@ data class SearcherUiState(
     val isLoading: Boolean = true,
     val errorMessage: UiMessage? = null,
     val results: List<String> = emptyList(),
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val searchMessage: UiMessage = UiMessage.Text("Start typing to search...")
 )

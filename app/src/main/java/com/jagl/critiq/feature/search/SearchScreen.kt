@@ -1,7 +1,6 @@
 package com.jagl.critiq.feature.search
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jagl.critiq.core.model.UiMessage
+import com.jagl.critiq.core.model.getMessage
 import com.jagl.critiq.core.ui.composables.Loading
 import com.jagl.critiq.core.ui.composables.NotAvable
 import com.jagl.critiq.core.ui.extensions.fullScreen
@@ -63,57 +64,63 @@ fun SearchContent(
 
         if (uiState.isLoading) {
             Loading(modifier)
-        } else if (uiState.errorMessage != null) {
+            return
+        }
+
+        if (uiState.errorMessage != null) {
             NotAvable(
                 modifier = modifier,
                 text = uiState.errorMessage
             )
-        } else {
-            Column(
-                modifier = modifier
-            ) {
-                Text(
-                    text = "Searcher",
-                    modifier = Modifier
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                TextField(
-                    value = uiState.searchQuery,
-                    onValueChange = { query ->
-                        if (query.isBlank()) {
-                            onEvent(SearcherUiEvents.ClearSearch)
-                        } else {
-                            onEvent(SearcherUiEvents.SearchQueryChanged(query))
-                        }
+            return
+        }
 
-                    },
-                    placeholder = { Text("Search for media...") },
-                    modifier = Modifier
-                )
-                Spacer(modifier = Modifier.height(12.dp))
 
-                if (uiState.results.isEmpty()) {
-                    Text(
-                        text = "Without results",
-                        modifier = Modifier
-                    )
-                } else uiState.results.forEach { result ->
-                    if (result != uiState.results.first()) {
-                        Spacer(modifier = Modifier.height(4.dp))
+        Column(
+            modifier = modifier
+        ) {
+            TextField(
+                value = uiState.searchQuery,
+                onValueChange = { query ->
+                    when (query.isBlank()) {
+                        true -> onEvent(SearcherUiEvents.ClearSearch)
+                        else -> onEvent(SearcherUiEvents.SearchQueryChanged(query))
                     }
-                    Text(
-                        text = result,
-                        modifier = Modifier.clickable {
-                            onEvent(SearcherUiEvents.MediaSelected(result.hashCode().toLong()))
-                        }
-                    )
+                },
+                placeholder = { Text("Search for media...") },
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            SearchResultsMessage(
+                modifier = Modifier,
+                message = uiState.searchMessage,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            uiState.results.forEach { result ->
+                if (result != uiState.results.first()) {
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
+                Text(
+                    text = result,
+                    modifier = Modifier.clickable {
+                        onEvent(SearcherUiEvents.MediaSelected(result.hashCode().toLong()))
+                    }
+                )
 
             }
-
-
         }
     }
+}
+
+@Composable
+fun SearchResultsMessage(
+    modifier: Modifier,
+    message: UiMessage,
+) {
+    val context = LocalContext.current
+    Text(
+        text = message.getMessage(context),
+        modifier = modifier
+    )
 }
 
 

@@ -2,6 +2,7 @@ package com.jagl.critiq.feature.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jagl.critiq.core.model.UiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -57,13 +58,18 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
         val result = getFilteredResults()
         delay(2000L)
-        _uiState.update { it.copy(isLoading = false, results = result) }
+        val uiMessage = if (result.isEmpty()) {
+            UiMessage.Text("No results found for '${_uiState.value.searchQuery}'")
+        } else {
+            UiMessage.Text("Found ${result.size} results")
+        }
+        _uiState.update { it.copy(isLoading = false, results = result, searchMessage = uiMessage) }
     }
 
     private fun getFilteredResults(): List<String> {
         val query = _uiState.value.searchQuery.lowercase()
         return results.toSet().filter { it.lowercase().contains(query) }
-            .take(10) // Limit to 10 results
+            .take(25) // Limit to 10 results
 
     }
 
