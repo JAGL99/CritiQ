@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.junit.jupiter.api)
     implementation(libs.junit.jupiter.params)
     implementation(libs.androidx.ui.test.junit4)
+    implementation(libs.hilt.android.testing)
 
     testImplementation(libs.turbine)
     testImplementation(libs.junit)
@@ -103,7 +104,6 @@ dependencies {
 
     androidTestImplementation(libs.androidx.paging.testing)
     androidTestImplementation (libs.androidx.rules)
-    androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.core.ktx.test)

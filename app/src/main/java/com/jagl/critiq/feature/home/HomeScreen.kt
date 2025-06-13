@@ -151,3 +151,9 @@ fun HomeScreenPreview() {
         }.collectAsLazyPagingItems(),
     )
 }
+
+/**
+ * Test ideas
+ *
+ * - Test that the HomeScreen show the 500 pages of the endpoint
+ */

@@ -13,7 +13,7 @@ class HomeViewModel @Inject constructor(
     mediaRepository: MediaRepository
 ) : ViewModel() {
 
-    private val language = MutableLiveData("en-US")
+    private val language: MutableLiveData<String?> = MutableLiveData(null)
 
     val items = mediaRepository.getPagingMedia(language.value).cachedIn(viewModelScope)
 

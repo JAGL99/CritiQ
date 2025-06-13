@@ -21,7 +21,7 @@ class RemotePaginateMediaDataSourceImpl @Inject constructor(
                 language = language
             )
             val body = response.body()!!
-            val mediaList = body.results.map { media -> TrendingResponse.Result.toDomain(media) }
+            val mediaList = body.results.mapNotNull(TrendingResponse.Result::toDomain)
             mediaList
         }
     }

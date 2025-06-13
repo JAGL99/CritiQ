@@ -17,7 +17,7 @@ data class TrendingResponse(
         @SerializedName("backdrop_path")
         val backdropPath: String,
         @SerializedName("genre_ids")
-        val genreIds: List<Int>,
+        val genreIds: List<Int>?,
         val id: Long,
         @SerializedName("media_type")
         val mediaType: String,
@@ -47,20 +47,22 @@ data class TrendingResponse(
             return "https://image.tmdb.org/t/p/w500$backdropPath"
         }
 
-        companion object : MapperData<Result, Media> {
+        companion object : MapperData<Result, Media?> {
 
-            override fun toDomain(data: Result): Media {
+            override fun toDomain(data: Result): Media? {
                 with(data) {
-                    return Media(
-                        id = data.id,
-                        title = title,
-                        posterPath = data.getFullPosterPath(),
-                        backdropPath = data.getFullBackdropPath(),
-                        type = data.mediaType,
-                        rating = data.voteAverage,
-                        releaseDate = data.releaseDate,
-                        description = data.overview
-                    )
+                    return if (mediaType != "movie") null
+                    else
+                        Media(
+                            id = data.id,
+                            title = title,
+                            posterPath = data.getFullPosterPath(),
+                            backdropPath = data.getFullBackdropPath(),
+                            type = data.mediaType,
+                            rating = data.voteAverage,
+                            releaseDate = data.releaseDate,
+                            description = data.overview
+                        )
                 }
 
             }
