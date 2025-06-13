@@ -14,6 +14,7 @@ import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
 import com.jagl.critiq.core.repository.remoteMediator.MediaRemoteMediator
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -41,6 +42,10 @@ class MediaRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = pagingSourceFactory
         ).flow.map { it.map(MediaEntity::toDomain) }.flowOn(dispatcherProvider.io)
+    }
+
+    override fun getMediaByQuery(query: String): Flow<List<Media>> {
+        return flow { emit(localMediaDataSource.getAllByQuery(query)) }.flowOn(dispatcherProvider.io)
     }
 
     companion object {
