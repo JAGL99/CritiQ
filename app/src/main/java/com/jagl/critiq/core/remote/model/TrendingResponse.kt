@@ -61,7 +61,8 @@ data class TrendingResponse(
                             type = data.mediaType,
                             rating = data.voteAverage,
                             releaseDate = data.releaseDate,
-                            description = data.overview
+                            description = data.overview,
+                            language = data.originalLanguage,
                         )
                 }
 

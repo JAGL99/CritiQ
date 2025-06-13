@@ -1,16 +1,11 @@
 package com.jagl.critiq.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,55 +16,64 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jagl.critiq.core.model.Media
+import com.jagl.critiq.core.model.UiMessage
+import com.jagl.critiq.core.test.media
+import com.jagl.critiq.core.ui.composables.Loading
+import com.jagl.critiq.core.ui.composables.NotAvable
+import com.jagl.critiq.core.ui.extensions.fullScreen
 import com.jagl.critiq.feature.home.composables.MovieItem
 import kotlinx.coroutines.flow.flow
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onNavigateToDetail: (Long) -> Unit
 ) {
     val items = viewModel.items.collectAsLazyPagingItems()
-    HomeContent(modifier, items)
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvents.collect { event ->
+            when (event) {
+                is HomeViewModel.UiEvent.OnMediaClick -> onNavigateToDetail(event.id)
+            }
+        }
+    }
+
+    HomeContent(items, viewModel::onEvent)
 }
 
 @Composable
 private fun HomeContent(
-    modifier: Modifier = Modifier.fillMaxSize(),
-    items: LazyPagingItems<Media>
+    items: LazyPagingItems<Media>,
+    onEvent: (HomeViewModel.UiEvent) -> Unit
 ) {
+    val modifier = Modifier.fullScreen(padding = 4.dp)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.then(modifier)
+        modifier = modifier
     ) {
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
         ) {
 
             items(items.itemCount) { index ->
-                items[index]?.let { item -> MovieItem(media = item) }
+                items[index]?.let { item -> MovieItem(media = item, onEvent = onEvent) }
             }
 
             items.apply {
                 when {
                     loadState.append is LoadState.Loading -> {
                         item {
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
+                            Loading(modifier = modifier)
                         }
                     }
 
                     loadState.append is LoadState.Error -> {
                         item {
-                            Text(
-                                text = "Error loading more items",
-                                modifier = Modifier.padding(16.dp)
+                            NotAvable(
+                                modifier = modifier,
+                                text = UiMessage.Text("Error loading more items")
                             )
                         }
 
@@ -83,45 +87,14 @@ private fun HomeContent(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
+    val medias: List<Media> = listOf(
+        media(), media(),
+        media(), media()
+    )
+    val items = flow { emit(PagingData.from(medias)) }.collectAsLazyPagingItems()
     HomeContent(
-        items = flow {
-            emit(
-                PagingData.from(
-                    listOf(
-                        Media(
-                            1,
-                            "Movie 1",
-                            "https://example.com/poster1.jpg",
-                            "https://example.com/backdrop1.jpg",
-                            "movie",
-                            8.5,
-                            "2023-01-01",
-                            "Description 1"
-                        ),
-                        Media(
-                            2,
-                            "Movie 2",
-                            "https://example.com/poster2.jpg",
-                            "https://example.com/backdrop2.jpg",
-                            "movie",
-                            7.0,
-                            "2023-02-01",
-                            "Description 2"
-                        ),
-                        Media(
-                            3,
-                            "Movie 3",
-                            "https://example.com/poster3.jpg",
-                            "https://example.com/backdrop3.jpg",
-                            "movie",
-                            9.0,
-                            "2023-03-01",
-                            "Description 3"
-                        )
-                    )
-                )
-            )
-        }.collectAsLazyPagingItems(),
+        items = items,
+        onEvent = {}
     )
 }
 

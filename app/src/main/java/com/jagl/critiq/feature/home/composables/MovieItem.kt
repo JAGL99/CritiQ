@@ -1,6 +1,7 @@
 package com.jagl.critiq.feature.home.composables
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -14,11 +15,18 @@ import androidx.compose.ui.unit.dp
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.test.media
 import com.jagl.critiq.core.ui.composables.MovieImage
+import com.jagl.critiq.feature.home.HomeViewModel.UiEvent
+import com.jagl.critiq.feature.home.HomeViewModel.UiEvent.OnMediaClick
 
 @Composable
-fun MovieItem(media: Media) {
+fun MovieItem(
+    media: Media,
+    onEvent: (UiEvent) -> Unit
+) {
     Card(
-        modifier = Modifier.padding(2.dp),
+        modifier = Modifier
+            .padding(2.dp)
+            .clickable { onEvent(OnMediaClick(media.id)) },
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.background)
     ) {
         Column(
@@ -36,5 +44,8 @@ fun MovieItem(media: Media) {
 @Preview(showBackground = true)
 @Composable
 fun MovieItemPreview() {
-    MovieItem(media = media())
+    MovieItem(
+        media = media(),
+        onEvent = {}
+    )
 }

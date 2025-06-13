@@ -13,6 +13,7 @@ data class MediaEntity(
     val posterPath: String,
     val backdropPath: String,
     val type: String,
+    val language: String,
     val rating: Double,
     val releaseDate: String,
     val description: String
@@ -27,7 +28,8 @@ data class MediaEntity(
                 type = entity.type,
                 rating = entity.rating,
                 releaseDate = entity.releaseDate,
-                description = entity.description
+                description = entity.description,
+                language = entity.language
             )
         }
 
@@ -40,7 +42,8 @@ data class MediaEntity(
                 type = domainModel.type,
                 rating = domainModel.rating,
                 releaseDate = domainModel.releaseDate,
-                description = domainModel.description
+                description = domainModel.description,
+                language = domainModel.language
             )
         }
 
