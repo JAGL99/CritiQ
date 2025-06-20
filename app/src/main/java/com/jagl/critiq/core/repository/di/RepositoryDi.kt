@@ -2,7 +2,7 @@ package com.jagl.critiq.core.repository.di
 
 import com.jagl.critiq.core.common.dispatcherProvider.DispatcherProvider
 import com.jagl.critiq.core.local.AppDatabase
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
 import com.jagl.critiq.core.repository.repository.MediaRepository
 import com.jagl.critiq.core.repository.repository.MediaRepositoryImpl
@@ -20,13 +20,13 @@ object RepositoryDi {
     @Provides
     fun provideMovieSource(
         database: AppDatabase,
-        localPaginationMediaDataSource: LocalPaginationMediaDataSource,
+        localMediaDataSource: LocalMediaDataSource,
         remotePaginateMediaDataSource: RemotePaginateMediaDataSource,
         dispatcherProvider: DispatcherProvider
     ): MediaRepository {
         return MediaRepositoryImpl(
             database = database,
-            localPaginationMediaDataSource = localPaginationMediaDataSource,
+            localMediaDataSource = localMediaDataSource,
             remotePaginateMediaDataSource = remotePaginateMediaDataSource,
             dispatcherProvider = dispatcherProvider
         )

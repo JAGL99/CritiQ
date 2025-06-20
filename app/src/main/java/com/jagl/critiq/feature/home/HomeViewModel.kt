@@ -17,6 +17,8 @@ class HomeViewModel @Inject constructor(
     mediaRepository: MediaRepository
 ) : ViewModel() {
 
+    //TODO: Move to a separate file
+
     sealed class UiEvent {
         data class OnMediaClick(val id: Long) : UiEvent()
     }

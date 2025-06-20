@@ -7,4 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface MediaRepository {
 
     fun getPagingMedia(language: String?): Flow<PagingData<Media>>
+
+    fun getMediaByQuery(query: String): Flow<List<Media>>
 }

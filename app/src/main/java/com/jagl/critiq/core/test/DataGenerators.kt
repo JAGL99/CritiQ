@@ -1,7 +1,6 @@
 package com.jagl.critiq.core.test
 
 import androidx.paging.PagingSource
-import com.jagl.critiq.core.local.entities.MediaEntity
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.remote.model.MovieDbApiError
 
@@ -19,9 +18,6 @@ fun media(): Media {
     )
 }
 
-fun mediaEntity(): MediaEntity {
-    return MediaEntity.toEntity(media())
-}
 
 fun mediaPairPage(page: Int): Pair<Int, List<Media>> {
     return Pair(
@@ -29,6 +25,7 @@ fun mediaPairPage(page: Int): Pair<Int, List<Media>> {
         (1..5).map {
             media().copy(
                 id = (it + (page - 1) * 5).toLong(),
+                description = "This is a test description for page $page, item $it.",
                 title = "Test Title $it - Page $page",
                 posterPath = "https://example.com/poster_$it.jpg",
                 backdropPath = "https://example.com/backdrop_$it.jpg"
