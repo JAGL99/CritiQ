@@ -2,6 +2,7 @@ package com.jagl.critiq.core.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.testing.asSnapshot
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
@@ -12,7 +13,7 @@ import assertk.assertions.isNotNull
 import com.jagl.critiq.core.common.CriticQAndroidTest
 import com.jagl.critiq.core.local.AppDatabase
 import com.jagl.critiq.core.local.entities.MediaEntity
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import com.jagl.critiq.core.model.Media
 import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
 import com.jagl.critiq.core.repository.repository.MediaRepository
@@ -23,6 +24,7 @@ import com.jagl.critiq.core.test.listOfLanguagePairMediaWithPage
 import com.jagl.critiq.core.test.paginSourceRefresh
 import com.jagl.critiq.core.test.rule.MainCoroutineRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +38,7 @@ class MediaRepositoryTest : CriticQAndroidTest() {
     val mainCoroutineRule = MainCoroutineRule()
 
     @Inject
-    lateinit var localDataSource: LocalPaginationMediaDataSource
+    lateinit var localDataSource: LocalMediaDataSource
 
     @Inject
     lateinit var database: AppDatabase
@@ -53,7 +55,7 @@ class MediaRepositoryTest : CriticQAndroidTest() {
         remoteDataSource = RemotePaginateMediaDataSourceFake(mediaList = mediaList)
         repository = MediaRepositoryImpl(
             remotePaginateMediaDataSource = remoteDataSource,
-            localPaginationMediaDataSource = localDataSource,
+            localMediaDataSource = localDataSource,
             dispatcherProvider = TestDispatchers(),
             database = database
         )
@@ -97,4 +99,28 @@ class MediaRepositoryTest : CriticQAndroidTest() {
             assertThat(pageAfeterLoad.data).isNotEmpty()
             assertThat(pageAfeterLoad.data).hasSize(expectedData.size)
         }
+
+    @Test
+    fun GetMediaByQueryAndReturnAllMediaWithThatQuery(): Unit = runTest {
+
+        val data = mediaList.first().second.map { it.second }.flatten()
+        val titleQuery = data.random().title
+        val descriptionQuery = data.random().description
+
+        localDataSource.upsertAll(data)
+
+        val titleResult = repository.getMediaByQuery(titleQuery).first()
+        assertThat(titleResult).isNotEmpty()
+        assertThat(titleResult).hasSize(1)
+        assertThat(titleResult.first().title).isEqualTo(titleQuery)
+
+        val descriptionResult = repository.getMediaByQuery(descriptionQuery).first()
+        assertThat(descriptionResult).isNotEmpty()
+        assertThat(descriptionResult).hasSize(1)
+        assertThat(descriptionResult.first().description).isEqualTo(descriptionQuery)
+
+        val nonExistentQuery = "NonExistentQuery"
+        val nonExistentResult = repository.getMediaByQuery(nonExistentQuery).first()
+        assertThat(nonExistentResult).isEmpty()
+    }
 }

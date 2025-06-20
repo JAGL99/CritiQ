@@ -3,12 +3,12 @@ package com.jagl.critiq.core.test.fake
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.jagl.critiq.core.local.entities.MediaEntity
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import com.jagl.critiq.core.model.Media
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-class LocalPaginationMediaDataSourceFake : LocalPaginationMediaDataSource {
+class LocalMediaDataSourceFake : LocalMediaDataSource {
 
     private val mediaList = MutableStateFlow<List<Media>>(emptyList())
 
@@ -37,6 +37,13 @@ class LocalPaginationMediaDataSourceFake : LocalPaginationMediaDataSource {
                     state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1) ?: 0
                 }
             }
+        }
+    }
+
+    override fun getAllByQuery(query: String): List<Media> {
+        return mediaList.value.filter {
+            it.description.contains(query, ignoreCase = true) ||
+                    it.title.contains(query, ignoreCase = true)
         }
     }
 

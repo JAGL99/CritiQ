@@ -10,23 +10,22 @@ import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import com.jagl.critiq.core.local.entities.MediaEntity
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
-import com.jagl.critiq.core.model.Media
-import com.jagl.critiq.core.test.fake.LocalPaginationMediaDataSourceFake
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
+import com.jagl.critiq.core.test.fake.LocalMediaDataSourceFake
 import com.jagl.critiq.core.test.media
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class LocalPaginationMediaDataSourceTest {
+class LocalMediaDataSourceTest {
 
-    private lateinit var lmds: LocalPaginationMediaDataSource
+    private lateinit var lmds: LocalMediaDataSource
     private lateinit var pagingSourceParams: PagingSource.LoadParams.Refresh<Int>
 
     @BeforeEach
     fun setUp() {
-        lmds = LocalPaginationMediaDataSourceFake()
+        lmds = LocalMediaDataSourceFake()
         pagingSourceParams = PagingSource.LoadParams.Refresh(
             key = null,
             loadSize = 0,
@@ -122,7 +121,40 @@ class LocalPaginationMediaDataSourceTest {
         val entity = lmds.getById(1L)
         assertThat(entity).isNotNull()
         assertThat(entity).isEqualTo(dataToSave.last())
-        val entities = lmds.getAll()
-        //assertThat(entities).hasSize(1)
+    }
+
+    @Test
+    fun `Save data, get by query`() = runBlocking {
+        val dataToSave = (1..5).map { index ->
+            media().copy(
+                id = index.toLong(),
+                title = "Media $index",
+                description = "Description random $index"
+            )
+        }
+        lmds.upsertAll(dataToSave)
+
+        val titleSearch = lmds.getAllByQuery("Media")
+        assertThat(titleSearch).isNotEmpty()
+        assertThat(titleSearch).hasSize(dataToSave.size)
+        assertThat(titleSearch.first().title).isEqualTo(dataToSave.first().title)
+        assertThat(titleSearch.last().title).isEqualTo(dataToSave.last().title)
+
+        val title = dataToSave.random().title
+        val titleSearchSingle = lmds.getAllByQuery(title)
+        assertThat(titleSearchSingle).isNotEmpty()
+        assertThat(titleSearchSingle).hasSize(1)
+        assertThat(titleSearchSingle.first().title).isEqualTo(title)
+
+        val description = dataToSave.random().description
+        println("Searching for description: $description")
+        val descriptionSearch = lmds.getAllByQuery(description)
+        println("Found description: $descriptionSearch")
+        assertThat(descriptionSearch).isNotEmpty()
+        assertThat(descriptionSearch).hasSize(1)
+        assertThat(descriptionSearch.first().description).isEqualTo(description)
+
+        val invalidSearch = lmds.getAllByQuery("Invalid Query")
+        assertThat(invalidSearch).isEmpty()
     }
 }

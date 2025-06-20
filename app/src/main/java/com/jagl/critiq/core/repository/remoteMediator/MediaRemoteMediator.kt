@@ -7,7 +7,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.RoomDatabase
 import androidx.room.withTransaction
 import com.jagl.critiq.core.local.entities.MediaEntity
-import com.jagl.critiq.core.local.source.LocalPaginationMediaDataSource
+import com.jagl.critiq.core.local.source.LocalMediaDataSource
 import com.jagl.critiq.core.model.ApiResult
 import com.jagl.critiq.core.remote.source.RemotePaginateMediaDataSource
 import com.jagl.critiq.core.remote.utils.RequestData
@@ -18,7 +18,7 @@ import java.io.IOException
 class MediaRemoteMediator(
     private val database: RoomDatabase,
     private val remotePaginateMediaDataSource: RemotePaginateMediaDataSource,
-    private val localPaginationMediaDataSource: LocalPaginationMediaDataSource,
+    private val localMediaDataSource: LocalMediaDataSource,
     private val language: String? = null,
 ) : RemoteMediator<Int, MediaEntity>() {
 
@@ -57,9 +57,9 @@ class MediaRemoteMediator(
             val mediaList = result.data
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    localPaginationMediaDataSource.deleteAll()
+                    localMediaDataSource.deleteAll()
                 }
-                localPaginationMediaDataSource.upsertAll(mediaList)
+                localMediaDataSource.upsertAll(mediaList)
             }
 
             MediatorResult.Success(endOfPaginationReached = mediaList.isEmpty())
